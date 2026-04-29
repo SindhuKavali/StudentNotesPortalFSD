@@ -92,7 +92,9 @@ export default function NoteDetails() {
   const handleDownload = async () => {
     try {
       // 1. Increment download count in DB
-      await axios.get(`http://localhost:5000/api/notes/download/${id}`);
+      await axios.get(`http://localhost:5000/api/notes/download/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
       setNote(prev => ({ ...prev, downloads: prev.downloads + 1 }));
       
       // 2. Fetch file as blob to force browser download
@@ -192,9 +194,15 @@ export default function NoteDetails() {
             </div>
 
             <div className="flex gap-4">
-              <button onClick={handleDownload} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl shadow-sm shadow-blue-200 transition-colors flex items-center justify-center gap-2">
-                <Download className="w-5 h-5" /> Download File ({note.downloads})
-              </button>
+              {user ? (
+                <button onClick={handleDownload} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl shadow-sm shadow-blue-200 transition-colors flex items-center justify-center gap-2">
+                  <Download className="w-5 h-5" /> Download File ({note.downloads})
+                </button>
+              ) : (
+                <Link to="/login" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl shadow-sm shadow-blue-200 transition-colors flex items-center justify-center gap-2">
+                  <Download className="w-5 h-5" /> Login to Download ({note.downloads})
+                </Link>
+              )}
               <button onClick={() => setShowPreview(true)} className="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium py-3 px-6 rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2">
                 <Eye className="w-5 h-5" /> Preview File
               </button>

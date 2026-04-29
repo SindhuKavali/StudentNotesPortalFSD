@@ -113,8 +113,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // @route   GET /api/notes/download/:id
-// @access  Public
-router.get('/download/:id', async (req, res) => {
+// @access  Private
+router.get('/download/:id', protect, async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
     if (note) {
